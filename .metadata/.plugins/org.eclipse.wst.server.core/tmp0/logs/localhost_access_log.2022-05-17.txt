@@ -1,3 +1,0 @@
-127.0.0.1 - - [17/May/2022:19:26:15 +0900] "GET / HTTP/1.1" 404 807
-0:0:0:0:0:0:0:1 - - [17/May/2022:19:26:15 +0900] "GET /controller/WEB-INF/classes/com/ict/di/DIMainJavaver.java HTTP/1.1" 404 721
-0:0:0:0:0:0:0:1 - - [17/May/2022:19:26:15 +0900] "GET /favicon.ico HTTP/1.1" 404 818
