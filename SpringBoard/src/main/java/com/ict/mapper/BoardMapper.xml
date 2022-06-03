@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "=//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.rg/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ict.mapper.BoardMapper">
+   <select id="getList" resultType="com.ict.persistence.BoardVO">
+     <![CDATA[
+        SELECT * FROM board_tbl ORDER BY bno DESC
+     ]]>
+   </select>
+   
+   <!-- 현재 insert는 BoardVO를 파라미터로 받고 있다. 
+   이 경우, VO 내부 변수를 #{변수명}으로 쿼리문에 전달할 수 있다.
+   ${변수명}이 아님을 주의해주기-->
+   <insert id="insert">
+      INSERT INTO board_tbl (bno, title, content, writer)
+         VALUES
+      (board_num.nextval, #{title}, #{content}, #{writer})
+   </insert>
+   <delete id="delete">
+      DELETE FROM board_tbl WHERE bno = #{bno}
+   </delete>
+   <update id="update">
+      UPDATE board_tbl 
+      SET 
+      title=#{title},content=#{content},
+      writer=#{writer},updatedate=SYSDATE
+      WHERE bno = #{bno}
+   </update>
+ </mapper>
