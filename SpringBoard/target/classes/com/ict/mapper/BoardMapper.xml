@@ -3,11 +3,55 @@
      PUBLIC "=//mybatis.org//DTD Mapper 3.0//EN"
      "http://mybatis.rg/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="com.ict.mapper.BoardMapper">
+		 <!-- 조건문에 의한 동적쿼리 -->
+		 <sql id="search">
+             <if test="searchType != null">
+             <if test="searchType == 't'.toString()">
+                (TITLE like '%'||#{keyword}||'%')AND
+             </if>
+             <if test="searchType == 'c'.toString()">           
+                (CONTENT like '%'||#{keyword}||'%')AND
+             </if>
+             <if test="searchType == 'w'.toString()">
+                (WRITER like '%'||#{keyword}||'%')AND
+             </if>
+             <if test="searchType == 'tc'.toString()">
+                ((TITLE like '%'||#{keyword}||'%')
+                    OR
+                  (CONTENT like '%'||#{keyword}||'%'))AND
+             </if>
+             <if test="searchType == 'cw'.toString()">
+                ((CONTENT like '%'||#{keyword}||'%')
+                    OR
+                  (WRITER like '%'||#{keyword}||'%'))AND
+             </if>
+             <if test="searchType == 'tcw'.toString()">
+                ((TITLE like '%'||#{keyword}||'%')
+                    OR
+                  (CONTENT like '%'||#{keyword}||'%')
+                    OR
+                   (WRITER like '%'||#{keyword}||'%'))AND
+             </if>
+         </if>
+       </sql>
+       
    <select id="getList" resultType="com.ict.persistence.BoardVO">
      <![CDATA[
-        SELECT * FROM board_tbl ORDER BY bno DESC
+       select * FROM
+		(select 
+		/*+ INDEX_DESC(board_tbl pk_board) */
+		rownum rn, board_tbl.* from board_tbl 
+		WHERE
+     ]]>
+     <!-- 위에 쓴 조건절 가져오기 -->
+     <include refid="search"></include>
+     
+     <![CDATA[
+        rownum <= (${page} * 10))
+        WHERE rn > (${page} - 1) * 10
      ]]>
    </select>
+   
    
    <!-- 현재 insert는 BoardVO를 파라미터로 받고 있다. 
    이 경우, VO 내부 변수를 #{변수명}으로 쿼리문에 전달할 수 있다.
@@ -27,4 +71,16 @@
       writer=#{writer},updatedate=SYSDATE
       WHERE bno = #{bno}
    </update>
+   
+   <select id="getDetail" resultType="com.ict.persistence.BoardVO">
+        SELECT * FROM board_tbl WHERE bno = #{bno}
+   </select>
+   
+   <select id="getBoardCount" resultType="long">
+       SELECT COUNT(*) FROM board_tbl WHERE
+       <include refid="search"></include>
+       <!-- 조건이 없을때도 WHERE절 뒤에 뭔가 붙어야 하므로 bno가 0보다 큰 경우라는 조건을 붙인다.-->
+       bno > 0
+   </select>
+   
  </mapper>

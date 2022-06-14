@@ -4,19 +4,28 @@ import java.sql.Date;
 import java.util.List;
 
 import com.ict.persistence.BoardVO;
+import com.ict.persistence.Criteria;
+import com.ict.persistence.PageMaker;
+import com.ict.persistence.SearchCriteria;
 
 public interface BoardMapper {
 	
-	public List<BoardVO> getList();
+	public List<BoardVO> getList(SearchCriteria cri);
 	
 	public void insert(BoardVO vo);
 	
-	// delete¸¦ ¸¸µé±â
-	// ±Û¹øÈ£ (LongÅ¸ÀÔ)À» ÀÔ·Â¹Þ¾Æ ÇØ´ç ±Û¹øÈ£¸¦ »èÁ¦ÇØÁØ´Ù.
+	// deleteï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
+	// ï¿½Û¹ï¿½È£ (LongÅ¸ï¿½ï¿½)ï¿½ï¿½ ï¿½Ô·Â¹Þ¾ï¿½ ï¿½Ø´ï¿½ ï¿½Û¹ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 	public void delete(Long bno);
 	
 	// update
 	public void update(BoardVO vo);
+	
+	// detail
+	public BoardVO getDetail(Long bno);
+	
+	public Long getBoardCount(SearchCriteria cri);
+	
 	
 
 }
