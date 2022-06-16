@@ -24,19 +24,19 @@ public class BoardServiceTests {
 	
 	//@Test
 	public void testgetList() {
-		log.info(service.getList());
+		log.info(service.getList(null));
 		
 	}
 	
-	// insert Å×½ºÆ®ÇÏ±â
+	// insert ï¿½×½ï¿½Æ®ï¿½Ï±ï¿½
 	
 	//@Test
 		public void testInsert() {
 			BoardVO vo = new BoardVO();
 
-			vo.setTitle("»õ·Î³Ö´Â±Û");
-			vo.setContent("»õ·Î³Ö´Âº»¹®");
-			vo.setWriter("»õ·Î³Ö´Â±Û¾´ÀÌ");
+			vo.setTitle("ï¿½ï¿½ï¿½Î³Ö´Â±ï¿½");
+			vo.setContent("ï¿½ï¿½ï¿½Î³Ö´Âºï¿½ï¿½ï¿½");
+			vo.setWriter("ï¿½ï¿½ï¿½Î³Ö´Â±Û¾ï¿½ï¿½ï¿½");
 			
 			service.insert(vo);
 			
@@ -53,9 +53,9 @@ public class BoardServiceTests {
 			BoardVO vo = new BoardVO();
 			
 			vo.setBno(10L);
-			vo.setTitle("¼öÁ¤µÈÁ¦¸ñ");
-			vo.setContent("¼öÁ¤µÈº»¹®");
-			vo.setWriter("¼öÁ¤µÈ±Û¾´ÀÌ");
+			vo.setTitle("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+			vo.setContent("ï¿½ï¿½ï¿½ï¿½ï¿½Èºï¿½ï¿½ï¿½");
+			vo.setWriter("ï¿½ï¿½ï¿½ï¿½ï¿½È±Û¾ï¿½ï¿½ï¿½");
 			
 			service.update(vo);
 		}

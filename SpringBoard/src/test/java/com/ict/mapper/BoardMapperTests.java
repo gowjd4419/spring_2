@@ -22,7 +22,7 @@ public class BoardMapperTests {
 	
 	//@Test
 	public void testGetList() {
-		log.info(mapper.getList());
+		log.info(mapper.getList(null));
 	}
 	
 	//@Test
