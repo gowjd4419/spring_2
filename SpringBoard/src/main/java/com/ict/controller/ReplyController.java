@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ict.persistence.ReplyVO;
@@ -98,6 +99,35 @@ public class ReplyController {
 	}
 	return entity;
    }
+	
+	@RequestMapping(method= {RequestMethod.PUT, RequestMethod.PATCH},
+			         value="/{rno}",
+			         consumes="application/json",
+			         produces= {MediaType.TEXT_PLAIN_VALUE})
+	public ResponseEntity<String> modify(
+			// VO는 우선 payload에 적힌 데이터로 받아온다.
+			// @RequestBody가 붙은 VO는
+			// payload에 적힌 데이터를 VO로 환산해서 가져온다.
+			@RequestBody ReplyVO vo,
+			// 단, 댓글번호는 주소에 기입된 숫자를 자원으로 받아온다.
+			@PathVariable("rno")Long rno){
+		
+		ResponseEntity<String> entity = null;
+		
+		try {
+			vo.setRno(rno);
+			service.modifyReply(vo);
+			
+			entity = new ResponseEntity<String>(
+					"SUCCESS", HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<String>(
+					e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		return entity;
+	}
+			
 	
 	
 	
