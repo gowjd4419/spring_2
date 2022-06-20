@@ -46,7 +46,7 @@ public class ReplyController {
 		try {
 			// 먼저 글쓰기 로직 실행 후 에러가 없다면...
 			service.addReply(vo);
-			entity = new ResponseEntity<String>("Success", HttpStatus.OK);
+			entity = new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 		}catch(Exception e) {
 			// catch로 넘어왔다는것은 글쓰기에 문제가 생겼다는 뜻이므로
 			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
