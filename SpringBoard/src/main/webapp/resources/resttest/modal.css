@@ -1,0 +1,13 @@
+
+#modDiv{
+    width: 300px;
+    height: 100px;
+    background-color: green;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -50px;
+    margin-left: -150px;
+    padding: 10px;
+    z-index: 1000;
+}
