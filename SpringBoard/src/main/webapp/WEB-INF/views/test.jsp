@@ -123,8 +123,13 @@
 				$(".modal-title").html(rno);
 				$("#replytext").val(replytext);
 				$("#modDiv").show("slow");
-		 });
-      
+		 });// 댓글 삽입
+		 
+		
+		 
       </script>
+      <!-- css파일의 경우는 link채그의 href로 경로 지정을, js파일인 경우는 script 태그의 src로 경로지정을 한다. -->
+      <script src="/resources/resttest/delete.js"></script>
+      <script src="/resources/resttest/modify.js"></script>
 </body>
 </html>
