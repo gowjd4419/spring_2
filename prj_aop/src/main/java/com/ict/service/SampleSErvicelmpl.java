@@ -1,0 +1,8 @@
+package com.ict.service;
+
+public class SampleSErvicelmpl implements SampleService {
+	@Override
+	public Integer doAdd(String str1, String str2)throws Exception{
+		return Integer.parseInt(str1)+Integer.parseInt(str2);
+	}
+}

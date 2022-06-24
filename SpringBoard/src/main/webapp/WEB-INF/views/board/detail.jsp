@@ -58,17 +58,23 @@
      </div><!-- row -->
      
     <!-- 댓글쓰기 -->
-   <div>
-      <div>
-         REPLYER <input type="text" name="replyer" id="newReplyWriter">
-      </div>
-      <div>
-         REPLY TEXT <input type="text" name="reply" id="newReplyText">
-      </div>
-      <button id="replyAddBtn">ADD REPLY</button>
-   </div>
+   <div class="row box-box-success">
+     <div class="box-header">
+        <h2 class="text-primary">댓글 작성</h2>
+     </div><!-- header -->
+     <div class="box-body">
+         <strong>Writer</strong>
+         <input type="text" id="newReplyer" placeholder="Replyer" class="form-control">
+         <strong>ReplyText</strong>
+         <input type="text" id="newReplyText" placeholder="ReplyText" class="form-control"><br>
+     </div><!-- body -->
+     <div class="box-footer">
+         <button type="button" class="btn btn-success" id="replyAddBtn">Add Reply</button>
+     </div><!-- footer -->
+   </div><!-- row -->
    
    
+   <!-- 모달창 -->
    <div id="modDiv" style="display:none;">
        <div class="modal-title"></div>
        <div>
@@ -125,13 +131,13 @@
 			 // 1.prev().prev()... 등과 같이 연쇄적으로 prev, next를 걸어서 고르기 나는 한번만해도돼서 한번만 함
 			 // 2.prev("태그선택자")를 써서 뒤족이나 앞쪽 형제 중 조건에 맞는것만 선택
 			 // 3.siblings("태그선택자")는 next, prev 모두를 범위로 조회한다.
-				let reply = $(this).siblings(".replytext");
-		 
+				let reply = $(this).parent();
+		      
 		 
 		        // .attr("태그 내 속성명") => 해당 속성에 부여된 값을 가져온다.
 		        // ex) <li data-rno="33"> => rno에 33을 저장해줌
 				let rno = reply.attr("data-rno");
-				let replytext = reply.text();
+				let replytext = $(this).prev().html()// 본문만 가져오도록 수정
 				
 				$(".modal-title").html(rno);
 				$("#replytext").val(replytext);
@@ -139,7 +145,7 @@
 		 });// 댓글 삽입
 		 
 		 $("#replyAddBtn").on("click", function(){
-	    	 let replyer = $("#newReplyWriter").val();  // 받아오기
+	    	 let replyer = $("#newReplyer").val();  // 받아오기
 	    	 let reply = $("#newReplyText").val();  
 	    	 
 	    	 $.ajax({
@@ -160,7 +166,7 @@
 	    				 
 	    				 alert("등록 되었습니다.");
 	    				 getAllList();
-	    				 $("#newReplyWriter").val(''); // 갱신 ''비워놔라
+	    				 $("#newReplyer").val(''); // 갱신 ''비워놔라
 	    				 $("#newReplyText").val(''); 
 	    			 }
 	    		 }
