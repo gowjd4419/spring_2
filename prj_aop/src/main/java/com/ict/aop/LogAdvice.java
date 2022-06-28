@@ -46,6 +46,7 @@ public class LogAdvice {
 		Object result = null;
 		
 		try {
+			// 이 시점에서야 타겟 메서드가 실행됨
 			result = pjp.proceed();
 			
 		}catch(Throwable e) {
