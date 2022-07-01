@@ -4,9 +4,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -59,13 +60,12 @@
 		      </div>
 		   </div>
 		 </div>
-		 
-		 
+
   <table class="table table-hover">
          <thead>
              <tr>
                 <td>글번호</td>
-                <td>글제목</td>
+               <td>글제목</td>
                 <td>글쓴이</td>
                 <td>쓴날짜</td>
                 <td>수정날짜</td>
@@ -75,7 +75,7 @@
              <c:forEach var="board" items="${boardList }">
               <tr>
                  <td>${board.bno }</td>
-                 <td><a href="http://localhost:8181/board/detail?bno=${board.bno}&searchType=${pageMaker.cri.searchType}&keyword=${pageMaker.cri.keyword}&page=${pageMaker.cri.page}">${board.title }</td>
+                 <td><a href="http://localhost:8181/board/detail?bno=${board.bno}&searchType=${pageMaker.cri.searchType}&keyword=${pageMaker.cri.keyword}&page=${pageMaker.cri.page}">${board.title }<span class="badge text-bg-dark">${board.replycount}</span></a></td>
                  <td>${board.writer }</td>
                  <td>${board.regDate }</td>
                  <td>${board.updateDate }</td>
