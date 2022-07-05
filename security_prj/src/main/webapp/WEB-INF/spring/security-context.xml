@@ -9,6 +9,8 @@
 
    <bean id="customAccessDenied" class="com.ict.security.CustomAccessDeniedHandler"/>
    <bean id="customLoginSuccess" class="com.ict.security.CustomLoginSuccessHandler"/>
+   <bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+   <bean id="customUserDetailsService" class="com.ict.security.CustomUserDetailsService"/> 
     <security:http>
          <!-- /secu/all 접속시 모든 유저에게 접근 허용  -->
          <security:intercept-url pattern="/secu/all" access="permitAll"/>
@@ -32,13 +34,15 @@
     
     <security:authentication-manager>
     
-         <security:authentication-provider>
+         <security:authentication-provider user-service-ref="customUserDetailsService">
              <!-- <security:user-service>
                     <security:user name="member" password="{noop}member" authorities="ROLE_MEMBER"/>
                     <security:user name="admin" password="{noop}admin" authorities="ROLE_MEMBER,ROLE_ADMIN"/>
               </security:user-service> -->
-              <security:jdbc-user-service data-source-ref="dataSource"/>
+             <!-- <security:jdbc-user-service data-source-ref="dataSource"/> -->
               
+              <security:password-encoder ref="bcryptPasswordEncoder"/>
+               
          </security:authentication-provider>
          
     </security:authentication-manager>

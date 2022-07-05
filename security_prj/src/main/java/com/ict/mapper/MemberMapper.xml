@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+     PUBLIC "=//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.rg/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ict.mapper.MemberMapper">
+ 
+   <!-- 이 resulMap의 경우, member_tbl과 MemberVO의 구조가 다르기 때문에 사용 -->
+   <resultMap type="com.ict.domain.MemberVO" id="memberMap">
+   <!-- 조인 등으로 기존 VO와 구조가 다른 데이터가 리턴되는 경우
+   resultMap으로 묶습니다. primary key를 id태그에 넣고
+   result의 property에는 VO의 변수명, column은 DB상의 컬럼명을 넣습니다.
+   이러면 VO의 변수명과 DB상의 컬럼명이 달라도 매칭이 됩니다. -->
+       <id property="userid" column="userid"/>
+       
+       <result property="userid" column="userid"/>
+       <result property="userpw" column="userpw"/>
+       <result property="userName" column="username"/>
+       <result property="regDate" column="regdate"/>
+       <result property="updateDate" column="updatedate"/>
+       
+       <collection property="authList" resultMap="authMap">
+       <!-- ArrayList의 경우 여러개일 경우에는 (2개이상) collection 사용 -->
+       </collection>
+   
+   <!-- authList가 단일변수에 단일값 매칭이 아닌 단일변수에 여러값 매칭이므로 사용 -->
+   </resultMap>
+   <!-- resultMap은 멤버변수와 컬럼변수명과 일치하지 않을경우일거같을때 사용 -->
+   <resultMap type="com.ict.domain.AuthVO" id="authMap">
+      <result property="userid" column="userid"/>
+      <result property="auth" column="auth"/>
+   </resultMap>
+   
+   <select id="read" resultMap="memberMap">
+       SELECT
+           m.userid, userpw, username, enabled, regdate, updatedate, a.auth
+               FROM
+           member_tbl m LEFT OUTER JOIN member_auth a on m.userid = a.userid
+           WHERE m.userid = #{userid}
+   </select>
+ 
+ 
+ </mapper>
