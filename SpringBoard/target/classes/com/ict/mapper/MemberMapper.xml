@@ -4,7 +4,7 @@
 <mapper namespace="com.ict.mapper.MemberMapper">
 
 	<!-- 이 resultMap의 경우, member_tbl 과 MemberVO의 구조가 다르기 때문에 사용 -->
-	<resultMap type="com.ict.domain.MemberVO" id="memberMap">
+	<resultMap type="com.ict.persistence.MemberVO" id="memberMap">
 		<!-- 조인 등으로 기존 VO와 구조가 다른 데이터가 리턴되는 경우
 		resultMap으로 묶습니다. primary key를 id에 주고
 		result의 property에는 VO의 변수명, column은 DB상의 컬럼명을 넣습니다.
@@ -21,7 +21,7 @@
 	</resultMap>
 	
 	<!-- authList가 단일변수에 단일값 매칭이 아닌 단일변수에 여러값 매칭이므로 사용 -->
-	<resultMap type="com.ict.domain.AuthVO" id="authMap">
+	<resultMap type="com.ict.persistence.AuthVO" id="authMap">
 		<result property="userid" column="userid" />
 		<result property="auth" column="auth" />
 	</resultMap>
@@ -34,23 +34,4 @@
 				WHERE
 			m.userid = #{userid}
 	</select>
-
-	<insert id="insertMemberTbl">
-		INSERT INTO MEMBER_TBL(userid, userpw, username)
-			VALUES
-		(#{userid}, #{userpw}, #{userName})
-	</insert>
-	
-	<update id="insertMemberAuth">
-		INSERT ALL
-		<foreach collection="authList" item="item" separator=" ">
-			INTO MEMBER_AUTH(userid, auth)
-				VALUES
-			(#{item.userid}, #{item.auth})
-		</foreach>
-		SELECT * FROM 
-			DUAL
-	</update>
-	
-
 </mapper>

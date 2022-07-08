@@ -3,6 +3,7 @@ package com.ict.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +29,11 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService service;
+	
+	// PreAuthorize를 붙이면 로그인한 사람만 들어갈수있음 아래에 ROLE_ADMIN 권한이 주어진 사람이 로그인햇을경우에만 접근 가능
+	//@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	
+	@PreAuthorize("/list")
 
 	// /board/list �ּҷ� �Խù� ��ü�� ����� ǥ���ϴ� ��Ʈ�ѷ��� ������ֱ�
 	// list.jsp�� ����Ǹ� �ǰ�, getList()�޼���� ������ ��ü �� �����
