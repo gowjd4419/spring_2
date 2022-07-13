@@ -4,6 +4,7 @@ package com.ict.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,11 +12,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -197,6 +202,66 @@ private String getFolder() {
 		return new ResponseEntity<>(list, HttpStatus.OK);
 		
 	}// uploadFormPost
+	
+	
+	// 그림파일 정보를 json으로 리턴해 비동기 요청으로 쓸 수 있도록 만들어주는 getFile메서드
+	@GetMapping("/display")
+	@ResponseBody
+	public ResponseEntity<byte[]> getFile(String fileName){
+		log.info("fileName: " + fileName);
+		
+		File file = new File("c:\\upload_data\\temp\\" + fileName);
+		
+		log.info("file: " + file);
+		
+		ResponseEntity<byte[]> result = null;
+		
+		try {
+			// 스프링쪽 HttpHeaders import하기 // java.net으로 임포트시 생성자가 오류남
+			HttpHeaders header = new HttpHeaders();
+			
+			// 이 메세지를 통해 파일정보가 들어감
+			header.add("Content-Type", Files.probeContentType(file.toPath()));
+			
+			result = new ResponseEntity<>(FileCopyUtils.copyToByteArray(file),
+					                       header,
+					                       HttpStatus.OK);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
+	
+	@GetMapping(value="/download",
+			   produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	@ResponseBody
+	public ResponseEntity<Resource> downloadFile(String fileName){
+		
+		log.info("download file: " + fileName);
+		
+		Resource resource = new FileSystemResource(
+				           "C:\\upload_data\\temp\\" + fileName);
+		
+		log.info("resource: " + resource);
+		
+		String resourceName = resource.getFilename();
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		try {
+			headers.add("Content-Disposition",
+					  "attachment; filename=" + 
+			           new String(resourceName.getBytes("UTF-8"),
+			        		                          "ISO-8859-1"));
+		}catch(UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		
+		return new ResponseEntity<Resource>(resource,
+				                             headers,
+				                             HttpStatus.OK);
+	}
 	
 	
 	

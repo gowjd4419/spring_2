@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="/resources/uploadAjax.css"/>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
@@ -86,17 +87,63 @@
     		});//ajax
     	}); // uploadBtn onclick
     	
+    	
     	let uploadResult = $(".uploadResult ul");
     	
     	function showUploadedFile(uploadResultArr){
     		let str = "";
     		
     		$(uploadResultArr).each(function(i,obj){
-    			str += "<li>" + obj.fileName + "</li>";
+    			if(!obj.image){
+    				
+    				let fileCallPath = encodeURIComponent(
+    						obj.uploadPath + "/"
+    						+ obj.uuid + "_" + obj.fileName);
+    				
+    				str += "<li><a href='/download?fileName=" + fileCallPath
+                           + "'>" + "<img src='/resources/pngwing.com.png'>"
+    				       + obj.fileName + "</a>"
+                           + "<span data-file=\'" + fileCallPath + "\' data-type='file'> X </sapn>"
+                           + "</li>";
+    			}else{
+    			//str += "<li>" + obj.fileName + "</li>";
+    			// 수정 코드
+    			
+    			// 썸네일은 display에 배치
+    			let fileCallPath = encodeURIComponent(
+    					obj.uploadPath + "/s_"
+    					+ obj.uuid + "_" + obj.fileName);
+    			// 실제 파일은 download에 배치
+    			let fileCallPath2 = encodeURIComponent(
+    					obj.uploadPath + "/"
+    					+ obj.uuid + "_" + obj.fileName);
+    			
+    			
+    			str += `<li>
+    			           <a href='dowload?fileName=\${fileCallPath2}'>
+    			             <img src='/display?fileName=\${fileCallPath}'>\${obj.fileName}
+    			             </a>
+    			             <span data-file='\${fileCallPath2}' data-type='image'>X</span>
+    			        </li>`;
+    			
+    			}
     		});
     		uploadResult.append(str);
     		
     	}//showUploadeFile
+    	
+    	$(".uploadResult").on("click","span",function(e){
+    		// 파일이름을 span태그 내부의 data-file에서 얻어와서 저장
+    		let targetFile = $(this).data("file");
+    		// 이미지 여부를 span태그 내부의 data-type 에서 얻어와서 저장
+    		let type = $(this).data("type");
+    		
+    		// 클릭한 span태그와 엮여있는 li를 targetLi에 저장
+    		let targetLi = $(this).closest("li");
+    		console.log(targetLi);
+    		// 클릭한 li요소를 화면에서 삭제함(파일은 남아있음).
+    		targetLi.remove();
+    	});
     	
      });   // document ready
   </script>
