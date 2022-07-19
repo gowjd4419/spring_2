@@ -14,7 +14,8 @@ vo에 적힌 명칭을 감안해서 제목, 글쓴이 본문을 쓸 수 있도�
    <input type="text" name="title" requried><br>     
    <input type="text" name="writer" requried ><br>  
    <textarea name="content" requried ></textarea> 
-   <input type="submit" value="글쓰기">
+   <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
+   <input type="submit" value="글쓰기" id="submitBtn">
 </form>
 
  <div class="uploadDiv">
@@ -117,11 +118,11 @@ vo에 적힌 명칭을 감안해서 제목, 글쓴이 본문을 쓸 수 있도�
     				
     				str += "<li "
     				       + "data-path='" + obj.uploadPath + "' data-uuid='" + obj.uuid
-    				       + "' data-filename='" + obj.fileName + "' data-type'" + obj.fileType
+    				       + "' data-filename='" + obj.fileName + "' data-type='" + obj.image
     				       + "'><a href='/board/download?fileName=" + fileCallPath
                            + "'>" + "<img src='/resources/pngwing.com.png'>"
     				       + obj.fileName + "</a>"
-                           + "<span data-file=\'" + fileCallPath + "\' data-type='file'> X </sapn>"
+                           + "<span data-file=\'" + fileCallPath + "\' data-type='file'> X </span>"
                            + "</li>";
     			}else{
     			//str += "<li>" + obj.fileName + "</li>";
@@ -137,7 +138,8 @@ vo에 적힌 명칭을 감안해서 제목, 글쓴이 본문을 쓸 수 있도�
     					+ obj.uuid + "_" + obj.fileName);
     			
     			
-    			str += `<li>
+    			str += `<li data-path='\${obj.uploadPath}' data-uuid='\${obj.uuid}'
+    			         data-filename='\${obj.fileName}' data-type='\${obj.image}'>
     			           <a href='/board/dowload?fileName=\${fileCallPath2}'>
     			             <img src='/board/display?fileName=\${fileCallPath}'>\${obj.fileName}
     			             </a>
@@ -175,6 +177,47 @@ vo에 적힌 명칭을 감안해서 제목, 글쓴이 본문을 쓸 수 있도�
     			}
     		});//ajax
     	}); //span close
+    	
+    	// 제출버튼 막기
+    	$("#submitBtn").on("click",function(e){
+    		// 1.버튼 기능을 막기
+    		e.preventDefault();
+    		
+    		// 2.let formObj = $("form");로 폼태그를 가져온다.
+    		let formObj = $("form");
+    		
+    		// 3.formObj 내부에 64페이지 장표를 참고해서
+    		// hidden태그들을 순서대로 만들어줍니다.
+    		
+    		let str = "";
+    		
+    		console.log($(".uploadResult ul li"));
+    		
+    		$(".uploadResult ul li").each(function(i, obj){
+    			let jobj = $(obj);
+    			
+    			str += "<input type='hidden' name='attachList[" + i + "].fileName' "
+    			    + "value='" + jobj.data("filename") + "' >"
+    			    + "<input type='hidden' name='attachList[" + i + "].uuid' "
+    			    + "value='" + jobj.data("uuid") + "' >"
+    			    + "<input type='hidden' name='attachList[" + i + "].uploadPath' "
+    			    + "value='" + jobj.data("path") + "' >"
+    			    + "<input type='hidden' name='attachList[" + i + "].fileType' "
+    			    + "value='" + jobj.data("type") + "' >"
+    		
+    		
+    		});
+    		console.log(str);
+    		
+    		// 4. formObj에 append를 이용해 str을 끼워넣는다.
+    		formObj.append(str);
+    		
+    		// 5. formObj.submit()을 이용해 제출기능이 실행되도록한다.
+    		formObj.submit();
+    		
+    	});
+    	
+    	
     	
      });   // document ready
     	

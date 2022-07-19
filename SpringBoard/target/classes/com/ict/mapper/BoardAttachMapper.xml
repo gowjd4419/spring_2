@@ -17,5 +17,9 @@
       SELECT * FROM ictimage WHERE bno = #{bno}
     </select>
     
+    <delete id="deleteAll">
+       DELETE FROM ictimage WHERE bno = #{bno}
+    </delete>
+    
  
  </mapper>

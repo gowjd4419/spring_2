@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ict.persistence.AttachFileDTO;
+import com.ict.persistence.BoardAttachVO;
 import com.ict.persistence.BoardVO;
 import com.ict.persistence.Criteria;
 import com.ict.persistence.PageMaker;
@@ -136,8 +139,19 @@ public class BoardController {
 	// post������� /insert�� ������ �ڷḦ �޾� �ֿܼ� ����ֱ�
 	@PostMapping("/insert")
 	public String insertBoard(BoardVO board) {
-		log.info(board);
+		log.info( board);
 		service.insert(board);
+		
+		
+		// 첨부파일 정보가 insert시 잘 들어오는지 디버깅
+		log.info("=====================");
+		log.info("register : " + board);
+		
+		if(board.getAttachList()!= null) {
+			board.getAttachList().forEach(attach -> log.info(attach));
+		}
+		
+		
 		// redirect를 사용해야 전체 글 목록을 로딩해온 다음 화면을 열어준다.
 		// 스프링 컨트롤러에서 리다이렉트를 할 때는
 		// 목적주소 앞에 redirect:을 추가로 붙이기
@@ -147,15 +161,28 @@ public class BoardController {
 	// 글삭제도 post방식으로 처리하도록 한다.
 	@PostMapping("/delete")
 	public String deleteBoard(Long bno,SearchCriteria cri,RedirectAttributes rttr) {
+		// 삭제할 로직의 첨부파일 목록을 먼저 다 가지고 온다.
+		List<BoardAttachVO> attachList = service.getAttachList(bno);
+		 
+		
 		// 삭제후 리스트로 돌아갈 수 있도록 내부 로직을 만들어주고
+	    // 아래 로직은 DB에 있던 정보만 삭제하므로
 		service.delete(bno);
 		
 		 rttr.addAttribute("page",cri.getPage());
 		 rttr.addAttribute("searchType",cri.getSearchType());
 		 rttr.addAttribute("keyword",cri.getKeyword());
 		// 디테일 페이지에 삭제 요청을 넣을 수 있는 폼을 만들어주기
+		 
+		 // attachList에 들어있는 정보를 토대로 C:의 파일까지 삭제
+		 if(attachList != null || attachList.size() > 0) {
+			 deleteFiles(attachList);
+		 }
+
 		
+		 
 	   return "redirect:/board/list";
+	   
 	}
 	
 	@PostMapping("/updateForm")
@@ -352,6 +379,41 @@ public class BoardController {
 		}
 		return new ResponseEntity<String>("deleted",HttpStatus.OK);
 	}// delete file method
+	
+	
+	@GetMapping(value="/getAttachList", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		
+		return new ResponseEntity<>(service.getAttachList(bno),HttpStatus.OK);
+	}
+	
+	// 삭제 보조 메서드
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		if(attachList == null || attachList.size() == 0) {
+			return;
+		}
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				Path file = Paths.get("c:\\upload_data\\temp\\" + attach.getUploadPath() +
+						          "\\" + attach.getUuid() + "_" + attach.getFileName());
+				
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumbNail = Paths.get("C:\\upload_data\\temp\\" + attach.getUploadPath()+
+							                "\\s_" + attach.getUuid() + "_" + attach.getFileName());
+				
+					Files.delete(thumbNail);
+				  
+				}
+			}catch(Exception e) {
+				log.error(e.getMessage());
+			}//end catch
+		});//end foreach
+	}// end deleteFiles method
 	
 	
 	

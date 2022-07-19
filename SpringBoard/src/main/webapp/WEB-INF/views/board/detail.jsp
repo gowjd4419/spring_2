@@ -9,6 +9,33 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+
+<style>
+   /* uploadResult 결과물 css*/
+   
+   #uploadResult{
+      width:100%;
+      background-color: gray;
+   }
+   #uploadResult ul {
+      display: flex;
+      flex-flow: row;
+      justify-content: center;
+      align-items: center;
+   }
+   
+   #uploadResult ul li {
+   list-style: none;
+   padding: 10px;
+   align-content: center;
+   text-align: center;
+   }
+   
+   #uploadResult ul li img{
+   width: 100px;
+   }
+   
+</style>
 </head>
 <body>
 <a href="/board/list?page=${param.page }&searchType=${param.searchType}&keyword=${param.keyword}"><button>목록</button></a>
@@ -39,6 +66,7 @@
           </tbody>
      </table>
 	   <input type="submit" value="삭제하기">
+	   <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
 	</form>
 	
 	<form action="/board/updateForm" method="post">
@@ -46,8 +74,19 @@
 	    <input type="hidden" name="page" value="${param.page}">
 	    <input type="hidden" name="searchType" value="${param.searchType}">
 	    <input type="hidden" name="keyword" value="${param.keyword}">
+	    <input type="hidden" name="${_csrf.parameterName }" value="${_csrf.token }"/>
 	     <input type="submit" value="수정하기">
 	 </form>
+	 
+	 
+	 <div class="row">
+	     <h3 class="text-primary">첨부파일</h3>
+	     <div id="uploadResult">
+	         <ul>
+	            <!--  첨부파일이 들어갈 위치 -->
+	         </ul>
+	     </div>
+	 </div><!-- row -->
 	 
 	 <!-- 댓글달리는 영역 -->
 	 <div class="row">
@@ -91,8 +130,10 @@
 	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	 
 	 <script>
+	 let bno = ${board.bno};
+	 
 	 function getAllList(){
-		    let bno = ${board.bno};
+		    
 			let str = "";
 			// json 데이터를 얻어오는 로직 실행
 			$.getJSON("/replies/all/" + bno, function(data){
@@ -173,10 +214,58 @@
 	    		 
 	    	 });
 	    	 
+	    	 
+	    	 
+	    	 
 	      });// 글 등록로직 종료
 	      
-		</script>
-		
+	   // 익명함수 선언 및 호출
+	   // 우선 함수이기 때문에 호출한다는 점을 명시하기 위해 마지막에 ()를 추가로 붙여준다.
+   	   (function(){
+    		$.getJSON("/board/getAttachList", {bno:bno}, function(arr){
+    			console.log(arr);
+    			
+    			let str="";
+    			
+    			$(arr).each(function(i, attach){
+    				// image type
+    				if(attach.fileType){
+    					let fileCallPath = encodeURIComponent(attach.uploadPath + "/s_" +
+    							attach.uuid + "_" + attach.fileName);
+    					str += "<li data-path='" + attach.uploadPath + "' data-uuid='"
+    					    + attach.uuid + "' data-filename='" + attach.fileName
+    					    + "' data-type='" + attach.fileType + "' ><div>"
+    					    + "<img src='/board/display?fileName=" + fileCallPath + "'>"
+    					   	+ "</div>"
+    					    + "</li>";
+    				}else{
+    					str += "<li data-path='" + attach.uploadPath + "' data-uuid='"
+					    + attach.uuid + "' data-filename='" + attach.fileName
+					    + "' data-type='" + attach.fileType + "' ><div>"
+					    + "<span> " + attach.fileName + "</span><br>"
+					    + "<img src='/resources/pngwing.com.png' width='100px' height='100px'>"
+					    + "</div>"
+					    +"</li>";
+    				}
+    			}); // .each 반복문 닫는부분
+    			// 위에서 str변수에 작성된 태그 형식을 화면에 끼워넣기
+    			$("#uploadResult ul").html(str);
+    			
+    		}); // end getJSON
+    	})(); // end anonymous
+    	
+    	$("#uploadResult").on("click","li", function(e){
+    		let liObj = $(this);
+    		
+    		let path = encodeURIComponent(liObj.data("path") + "/" + liObj.data("uuid") + "_"
+    				                             + liObj.data("filename"));
+    		
+    		     // download
+    		     // 나는 boardcontorller에 업로드 컨트롤러를 복붙했기때문에 앞에 /board를 꼭 붙여야함
+    		     self.location = "/board/download?fileName=" + path;
+    	});
+    	
+	      </script>
 	  <script src="/resources/resttest/delete.js"></script>
       <script src="/resources/resttest/modify.js"></script>
       <script src="/resources/resttest/modalclose.js"></script>
